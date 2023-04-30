@@ -1,12 +1,12 @@
 import streamlit as st
 from streamlit_chat import message
-from agent import agent
+from agent import conversational_agent
 
-print('this is app.py')
-# st.title('How My ZSH')
+
+ai_agent = conversational_agent()
+st.title('How My ZSH')
 
 st.markdown(""" 
-    # How My ZSH
     This is a demo of a chatbot that can answer questions about the Oh My Zsh
     wiki. It uses the [Streamlit Chat]() component and the [Chroma]() library to 
     search the wiki and find answers to your questions. 
@@ -34,7 +34,7 @@ if st.button('Clear', key='clear'):
 # If there is user input, search for a response using the search_chroma function
 if user_input:
     with st.spinner(text='Searching for response...'):
-        output = agent.run(user_input)
+        output = ai_agent.run(user_input)
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 

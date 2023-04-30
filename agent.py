@@ -3,8 +3,12 @@ from langchain.agents import initialize_agent, Tool, load_tools
 from langchain.agents import AgentType
 from langchain.utilities import GoogleSearchAPIWrapper
 from langchain.tools.human.tool import HumanInputRun
+from langchain.memory import ConversationBufferMemory
+from langchain.chat_models import ChatOpenAI
+
 
 from memory import get_memory
+
 
 tools = [
     Tool(
@@ -25,15 +29,25 @@ tools = [
     #     ),
 ]
 
-agent = initialize_agent(
-    llm=OpenAI(),
-    tools=tools,
-    agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True
-)
+def conversational_agent(): 
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    llm=ChatOpenAI(temperature=0)
+    agent = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, verbose=True, memory=memory)
+    return agent
+    
+    
+def zero_shot_agent():
+    agent = initialize_agent(
+        llm=OpenAI(),
+        tools=tools,
+        agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True
+    )
+    return agent
 
 if __name__ == "__main__":
     while True:
-        query = input("Ask me something: ")
+        agent = conversational_agent()
+        query = input("Ask me something: ")        
         answer = agent.run(query)
         print(answer)
