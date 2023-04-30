@@ -3,7 +3,7 @@ from langchain.agents import initialize_agent, Tool, load_tools
 from langchain.agents import AgentType
 from langchain.utilities import GoogleSearchAPIWrapper
 from langchain.tools.human.tool import HumanInputRun
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryBufferMemory
 from langchain.chat_models import ChatOpenAI
 
 
@@ -15,7 +15,7 @@ tools = [
         name = "OhMyZsh QA System",
         func=get_memory().agent_tool(),
         description="This is your primary tool. You always start here. This is the Oh My Zsh (ohmyzsh) wiki. It may not have all the info."
-        
+
     ),
     Tool(
         name = "Google Search",
@@ -25,17 +25,20 @@ tools = [
     # Tool(
     #     description="You can ask a human for guidance when you think you got stuck or you are not sure what to do next. The input should be a question for the human.",
     #     func = HumanInputRun().run,
-    #    name="Human" 
+    #    name="Human"
     #     ),
 ]
 
-def conversational_agent(): 
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+memory = ConversationSummaryBufferMemory(memory_key="chat_history",
+                                         return_messages=True,
+                                         max_token_limit=400,
+                                         llm=ChatOpenAI(temperature=0))
+def conversational_agent():
     llm=ChatOpenAI(temperature=0)
     agent = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, verbose=True, memory=memory)
     return agent
-    
-    
+
+
 def zero_shot_agent():
     agent = initialize_agent(
         llm=OpenAI(),
@@ -48,6 +51,8 @@ def zero_shot_agent():
 if __name__ == "__main__":
     while True:
         agent = conversational_agent()
-        query = input("Ask me something: ")        
+        query = input("Ask me something: ")
         answer = agent.run(query)
         print(answer)
+        # print memory
+        print(f'\nMemory: {memory.load_memory_variables({})}')
