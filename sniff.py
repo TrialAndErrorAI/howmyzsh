@@ -4,7 +4,7 @@ from typing import List
 from langchain.schema import Document
 from langchain.document_loaders import UnstructuredMarkdownLoader
 
-DEBUG = True
+DEBUG = False
 def logd(msg):
     if DEBUG:
         print(f'Debug: {msg}')
@@ -50,8 +50,10 @@ def sniff_github(repo_path, branch="main", use_markdown_loader=False, clone_url=
         logd(rel_file_path)
     
         if use_markdown_loader:
-            doc = UnstructuredMarkdownLoader(file_path).load()
-            docs.append(doc)
+            doc_chunks = UnstructuredMarkdownLoader(file_path).load()
+            logd('Markdown chunks: ' + str(len(doc_chunks)))
+            docs.extend(doc_chunks)
+            
         else:
             doc = _load_file(file_path, rel_file_path)
             if doc:
@@ -59,7 +61,7 @@ def sniff_github(repo_path, branch="main", use_markdown_loader=False, clone_url=
 
     return docs
 
-def _load_file(file_path, rel_file_path):
+def _load_file(file_path, rel_file_path) -> Document:
     try:
         with open(file_path, "rb") as f:
             content = f.read()
