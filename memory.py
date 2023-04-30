@@ -9,6 +9,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 from langchain.schema import Document
 from git import Repo
+from langchain.chains import RetrievalQA
 
 from sniff import sniff_github
 
@@ -57,6 +58,11 @@ class Memory:
 
         return answer
     
+    def agent_tool(self): 
+        return RetrievalQA.from_chain_type(llm=OpenAI(), 
+                                           chain_type="stuff", 
+                                           retriever=self.vectordb.as_retriever())
+        
     def update_memory(self):
         docs = sniff_github(repo_path=REPO_PATH, 
                             clone_url=OHMYZSH_WIKI_URL, 

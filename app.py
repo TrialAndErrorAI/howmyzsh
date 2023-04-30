@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_chat import message
-from memory import get_memory
+from agent import agent
 
 print('this is app.py')
 # st.title('How My ZSH')
@@ -34,7 +34,7 @@ if st.button('Clear', key='clear'):
 # If there is user input, search for a response using the search_chroma function
 if user_input:
     with st.spinner(text='Searching for response...'):
-        output = get_memory().query(user_input)
+        output = agent.run(user_input)
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 
@@ -45,4 +45,5 @@ if st.session_state['generated']:
                 avatar_style="personas",
                 is_user=True, key=str(i) + '_user')
         message(st.session_state["generated"][i], key=str(i))
+        
         
