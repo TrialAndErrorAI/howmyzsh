@@ -9,5 +9,5 @@ set -e
 # . ./.venv/bin/activate
 
 pip install --no-cache-dir -r requirements.txt
-
+export GIT_PYTHON_GIT_EXECUTABLE=/usr/bin/git
 streamlit run app.py --server.port=8080
