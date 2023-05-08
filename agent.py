@@ -38,16 +38,6 @@ def conversational_agent():
     agent = initialize_agent(tools, llm, agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION, verbose=True, memory=memory)
     return agent
 
-
-def zero_shot_agent():
-    agent = initialize_agent(
-        llm=OpenAI(),
-        tools=tools,
-        agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True
-    )
-    return agent
-
 if __name__ == "__main__":
     while True:
         agent = conversational_agent()

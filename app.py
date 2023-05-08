@@ -18,10 +18,10 @@ def get_text():
 
 # Initialize the session state for generated responses and past inputs
 if 'generated' not in st.session_state:
-    st.session_state['generated'] = ['i am ready to help you ser']
-
+    st.session_state['generated'] = ['Ask me anything about Oh My Zsh']
+    
 if 'past' not in st.session_state:
-    st.session_state['past'] = ['hello']
+    st.session_state['past'] = ['']
 
 # Get the user's input from the text input field
 user_input = get_text()
@@ -31,19 +31,22 @@ if st.button('Clear', key='clear'):
     st.session_state['generated'] = []
     st.session_state['past'] = []
 
-# If there is user input, search for a response using the search_chroma function
+# If there is user input get the response from the agent
 if user_input:
     with st.spinner(text='Searching for response...'):
+        # clear the text input field
         output = ai_agent.run(user_input)
-    st.session_state.past.append(user_input)
-    st.session_state.generated.append(output)
+    # Add the user input and generated response to the beginning of session
+    # state so that it is displayed in the chat
+    st.session_state['generated'].insert(0, output)
+    st.session_state['past'].insert(0, user_input)
 
 # If there are generated responses, display the conversation using Streamlit messages
 if st.session_state['generated']:
     for i in range(len(st.session_state['generated'])):
+        message(st.session_state["generated"][i], key=str(i))
         message(st.session_state['past'][i],
                 avatar_style="personas",
                 is_user=True, key=str(i) + '_user')
-        message(st.session_state["generated"][i], key=str(i))
         
         

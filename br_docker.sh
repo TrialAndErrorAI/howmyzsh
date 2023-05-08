@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Build the Docker image
+# Build and run the Docker container for the HowMyZsh project
 docker build -t howmyzsh .
-
-# Run the Docker container
 docker run -p 8080:8080 --name howmyzsh-container howmyzsh
