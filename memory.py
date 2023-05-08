@@ -26,9 +26,14 @@ DEBUG = True
 def logd(msg):
     if DEBUG:
         print('Debug: ' + msg)
+
+#  TODO - Let's prefer function over global singleton class
+
 class Memory: 
     _instance = None
     vectordb = None
+    doc_chunk_size = 500
+    doc_chunk_overlap = 100
 
     def __init__(self):
         if self._instance is not None:
@@ -70,7 +75,8 @@ class Memory:
                             use_markdown_loader=True,
                             file_filter=lambda x: x.endswith(".md"))
         logd(f'Loaded {len(docs)} documents from {OHMYZSH_WIKI_URL}')
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=100)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.doc_chunk_size, 
+                                                       chunk_overlap=self.doc_chunk_overlap)
         doc_chunks = text_splitter.split_documents(docs)
         self._embed_documents(doc_chunks)
         if DEBUG:

@@ -12,7 +12,7 @@ from memory import get_memory
 
 tools = [
     Tool(
-        name = "OhMyZsh QA System",
+        name = "OhMyZsh Official Wiki",
         func=get_memory().agent_tool(),
         description="This is your primary tool. You always start here. This is the Oh My Zsh (ohmyzsh) wiki. It may not have all the info."
 
